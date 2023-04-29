@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Restaurant Website</title>
+  </head>
+  <body onload="getMenu()">
+    <h1>Welcome to Our Restaurant!</h1>
+    <div id="menu"></div>
+    <button onclick="placeOrder()">Place Order</button>
+
+    <script>
+      const menuUrl = "https://raw.githubusercontent.com/saksham-accio/f2_contest_3/main/food.json"
+
+      function getMenu() {
+        fetch(menuUrl)
+          .then(response => response.json())
+          .then(data => {
+            const menuItems = data.menu_items;
+            const menuList = document.createElement("ul");
+            menuItems.forEach(item => {
+              const menuItem = document.createElement("li");
+              menuItem.innerText = item.name + " - $" + item.price;
+              menuList.appendChild(menuItem);
+            });
+            document.getElementById("menu").appendChild(menuList);
+          });
+      }
+
+      function takeOrder() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const burgers = ["Cheeseburger", "Double Burger", "Bacon Burger"];
+            const order = {
+              burgers: burgers[Math.floor(Math.random() * burgers.length)],
+            };
+            resolve(order);
+          }, 2500);
+        });
+      }
+
+      function orderPrep() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({ order_status: true, paid: false });
+          }, 1500);
+        });
+      }
+
+      function payOrder() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({ order_status: true, paid: true });
+          }, 1000);
+        });
+      }
+
+      function thankyouFnc() {
+        alert("Thank you for eating with us today!");
+      }
+
+      function placeOrder() {
+        takeOrder()
+          .then(order => {
+            console.log("Order: ", order);
+            return orderPrep();
+          })
+          .then(orderStatus => {
+            console.log("Order Status: ", orderStatus);
+            return payOrder();
+          })
+          .then(paidStatus => {
+            console.log("Paid Status: ", paidStatus);
+            thankyouFnc();
+          })
+          .catch(error => console.error(error));
+      }
+    </script>
+  </body>
+</html>
